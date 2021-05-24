@@ -5,6 +5,7 @@ root = Tk()
 root.title('SquareGame')
 roomSize = 700
 
+
 class Box:
 	def __init__(self):
 		self.x = 15
@@ -20,15 +21,15 @@ class Box:
 		self.box = room.create_rectangle(10, 10, 10 + self.width, 10 + self.height, fill='blue')
 		
 		self.platforms = [Platform(130, 670, 170, 680), Platform(0, 640, 100, 660), Platform(200, 640, 250, 700), Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), DisappearingPlatform(600, 670, 700, 680, 3, 1, 0)]
-		self.movingPlatforms = [MovingPlatform(40, 600, 90, 610, 110, 0, 0.2)]
-		
+		self.movingPlatforms = [MovingPlatform(40, 600, 90, 610, 0, 10, 0.2)]
+
 		room.after(10, self.loop)
 		
 	def loop(self):
 		xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
-		##yStep = (keyboard.is_pressed('down') - keyboard.is_pressed('up')) * self.step
+		# yStep = (keyboard.is_pressed('down') - keyboard.is_pressed('up')) * self.step
 		self.dy -= self.g
-		if(keyboard.is_pressed('up') and self.onGround):
+		if keyboard.is_pressed('up') and self.onGround:
 			self.dy = -self.jump
 		self.onGround = False
 		self.x += xStep
@@ -64,7 +65,7 @@ class Box:
 			
 	def boundingPlatforms(self):
 		for platform in self.platforms:
-			move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
+			move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy, 0, 0)
 			self.x += move[0]
 			self.y += move[1]
 			room.move(self.box, move[0], move[1])
@@ -76,7 +77,7 @@ class Box:
 	def boundingMovingPlatforms(self):
 		for platform in self.movingPlatforms:
 			platform.slide()
-			move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
+			move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy, platform.xSpeed * (1 if platform.forward else -1), platform.ySpeed * (1 if platform.forward else -1))
 			self.x += move[0]
 			self.y += move[1]
 			room.move(self.box, move[0], move[1])
@@ -84,7 +85,8 @@ class Box:
 				self.dy = 0
 			if move[3]:
 				self.onGround = True
-			
+
+
 class Platform:
 	
 	def __init__(self, x1, y1, x2, y2):
@@ -100,24 +102,24 @@ class Platform:
 		self.width = abs(x1 - x2)
 		self.platform = room.create_rectangle(x1, y1, x2, y2, fill='black')
 		
-	def bounding(self, x, y, w, h, dx, dy):
+	def bounding(self, x, y, w, h, dx, dy, pdx, pdy):
 		xStep = 0
 		yStep = 0
 		resetDy = False
 		ground = False
 		if x + (w / 2) > self.left and x - (w / 2) < self.right:
 			if y + (h / 2) > self.top and y + (h / 2) - dy <= self.top:
-				yStep = self.top - (y + (h / 2))
+				yStep = self.top - (y + (h / 2)) + pdy
 				resetDy = True
 				ground = True
 			elif y - (h / 2) < self.bottom and y - (h / 2) - dy >= self.bottom:
-				yStep = self.bottom - (y - (h / 2))
+				yStep = self.bottom - (y - (h / 2)) + pdy
 				resetDy = False
 		if y - (h / 2) < self.bottom and y + (h / 2) > self.top:
 			if x - (w / 2) < self.right and x - (w / 2) - dx >= self.right:
-				xStep = self.right - (x - (w / 2))
+				xStep = self.right - (x - (w / 2)) + pdx
 			elif x + (w / 2) > self.left and x + (w / 2) - dx <= self.left:
-				xStep = self.left - (x + (w / 2))
+				xStep = self.left - (x + (w / 2)) + pdx
 		return (xStep, yStep, resetDy, ground)
 		
 	def move(self, x, y):
@@ -152,8 +154,8 @@ class MovingPlatform(Platform):
 		self.y = 0
 		self.forward = True
 		
-	def bounding(self, x, y, w, h, dx, dy):
-		output = super().bounding(x, y, w, h, dx, dy)
+	def bounding(self, x, y, w, h, dx, dy, pdx, pdy):
+		output = super().bounding(x, y, w, h, dx, dy, pdx, pdy)
 		xStep = output[0]
 		yStep = output[1]
 		resetDy = output[2]
@@ -171,7 +173,8 @@ class MovingPlatform(Platform):
 		self.y += dy
 		if (self.x >= self.xDelta and self.y >= self.yDelta) or (self.x <= 0 and self.y <= 0):
 			self.forward = not self.forward
-			
+
+
 class DisappearingPlatform(Platform):
 	def __init__(self, x1, y1, x2, y2, tOn, tOff, tShift):
 		super().__init__(x1, y1, x2, y2)
@@ -180,7 +183,7 @@ class DisappearingPlatform(Platform):
 		self.time = tShift * 100
 		super().changeColor('green')
 	
-	def bounding(self, x, y, w, h, dx, dy):
+	def bounding(self, x, y, w, h, dx, dy, pdx, pdy):
 		self.time += 1
 		if self.time < self.tOn:
 			color = "#"
@@ -194,8 +197,9 @@ class DisappearingPlatform(Platform):
 			self.time %= self.tOff + self.tOn
 
 		if self.time < self.tOn:
-			return super().bounding(x, y, w, h, dx, dy)
+			return super().bounding(x, y, w, h, dx, dy, pdx, pdy)
 		return (0, 0, False, False)
+
 
 class Keyboard:
 	def __init__(self):
@@ -210,14 +214,12 @@ class Keyboard:
 		key = e.keysym.lower()
 		if key not in self.down:
 			self.down.append(key)
-			
-	
+
 	def released(self, e):
 		key = e.keysym.lower()
 		if key in self.down:
 			self.down.remove(key)
 			
-		
 
 room = Canvas(root, height=roomSize, width=roomSize)
 
@@ -228,5 +230,3 @@ b = Box()
 room.pack()
 room.focus_set()
 root.mainloop()
-
-	
