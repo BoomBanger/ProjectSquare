@@ -19,7 +19,7 @@ class Box:
 		self.onGround = False
 		self.box = room.create_rectangle(10, 10, 10 + self.width, 10 + self.height, fill='blue')
 		
-		self.platforms = [Platform(130, 670, 170, 680), Platform(0, 640, 100, 660), Platform(200, 640, 250, 700), Platform(250, 570, 280, 700), Platform(320, 520, 340, 630)]
+		self.platforms = [Platform(130, 670, 170, 680), Platform(0, 640, 100, 660), Platform(200, 640, 250, 700), Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), DisappearingPlatform(600, 670, 700, 680, 3, 1, 0)]
 		self.movingPlatforms = [MovingPlatform(40, 600, 90, 610, 110, 0, 0.2)]
 		
 		room.after(10, self.loop)
@@ -132,7 +132,12 @@ class Platform:
 		room.move(self.platform, x, y)
 		
 	def changeColor(self, color):
-		room.itemConfig(self.platform, color)
+		if color == "Hide":
+			room.itemconfigure(self.platform, state='hidden')
+		else:
+			room.itemconfigure(self.platform, fill=color)
+			room.itemconfigure(self.platform, state='normal')
+			
 		
 class MovingPlatform(Platform):
 	def __init__(self, x1, y1, x2, y2, xDelta, yDelta, speed):
@@ -170,15 +175,27 @@ class MovingPlatform(Platform):
 class DisappearingPlatform(Platform):
 	def __init__(self, x1, y1, x2, y2, tOn, tOff, tShift):
 		super().__init__(x1, y1, x2, y2)
-		self.tOn = tOn
-		self.tOff = tOff
-		self.time = tShift
-		super().changeColor('purple')
+		self.tOn = tOn * 100
+		self.tOff = tOff * 100
+		self.time = tShift * 100
+		super().changeColor('green')
 	
 	def bounding(self, x, y, w, h, dx, dy):
 		self.time += 1
-		if self.time < tOn / 3:
-			super().changeColor('green')
+		if self.time < self.tOn:
+			color = "#"
+			value = hex(round(255 * self.time / self.tOn))
+			value = value[2:]
+			value = ((2 - len(value)) * "0") + value
+			color += value + "FF" + value
+			super().changeColor(color)
+		else:
+			super().changeColor("Hide")
+			self.time %= self.tOff + self.tOn
+
+		if self.time < self.tOn:
+			return super().bounding(x, y, w, h, dx, dy)
+		return (0, 0, False, False)
 
 class Keyboard:
 	def __init__(self):
@@ -191,14 +208,12 @@ class Keyboard:
 	
 	def pressed(self, e):
 		key = e.keysym.lower()
-		print(key)
 		if key not in self.down:
 			self.down.append(key)
 			
 	
 	def released(self, e):
 		key = e.keysym.lower()
-		print(key)
 		if key in self.down:
 			self.down.remove(key)
 			
