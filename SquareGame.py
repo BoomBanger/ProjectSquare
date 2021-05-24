@@ -1,5 +1,4 @@
 from tkinter import * 
-import keyboard
 from math import *
 
 root = Tk()
@@ -180,13 +179,39 @@ class DisappearingPlatform(Platform):
 		self.time += 1
 		if self.time < tOn / 3:
 			super().changeColor('green')
+
+class Keyboard:
+	def __init__(self):
+		self.down = []
+		room.bind('<KeyPress>', self.pressed)
+		room.bind('<KeyRelease>', self.released)
+
+	def is_pressed(self, key):
+		return key.lower() in self.down
+	
+	def pressed(self, e):
+		key = e.keysym.lower()
+		print(key)
+		if key not in self.down:
+			self.down.append(key)
+			
+	
+	def released(self, e):
+		key = e.keysym.lower()
+		print(key)
+		if key in self.down:
+			self.down.remove(key)
+			
 		
 
 room = Canvas(root, height=roomSize, width=roomSize)
-room = Canvas(root, height=roomSize, width=roomSize)
 
+keyboard = Keyboard()
 b = Box()
 
 
 room.pack()
+room.focus_set()
 root.mainloop()
+
+	
