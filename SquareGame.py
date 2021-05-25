@@ -9,7 +9,7 @@ roomSize = 700
 class Box:
 	def __init__(self):
 		self.x = 15
-		self.y = 685
+		self.y = 15
 		self.dy = 0
 		self.dx = 0
 		self.g = -0.1
@@ -18,16 +18,23 @@ class Box:
 		self.width = 10
 		self.height = 10
 		self.onGround = False
-		self.box = room.create_rectangle(10, 690, 10 + self.width, 690 - self.height, fill='blue')
+		self.box = room.create_rectangle(10, 10, 10 + self.width, 10 + self.height, fill='blue')
 		
-		self.platforms = [Platform(130, 670, 170, 680), Platform(0, 640, 100, 660), Platform(200, 640, 250, 700), Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), DisappearingPlatform(600, 670, 700, 680, 3, 1, 0)]
-		self.movingPlatforms = [MovingPlatform(40, 600, 90, 610, 110, 0, 1)]
+		self.platforms = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(200, 650, 250, 700),
+			Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), Platform(30, 0, 40, 660),
+			DisappearingPlatform(320, 630, 340, 700, 3, 1, 0), DisappearingPlatform(370, 660, 390, 680, 3, 1, 0),
+			Platform(410, 630, 430, 700), DisappearingPlatform(470, 660, 490, 670, 3, 1, 0),
+			DisappearingPlatform(520, 640, 540, 650, 3, 1, 0), DisappearingPlatform(555, 670, 585, 680, 3, 1, 2),
+			Platform(565, 570, 575, 650), MovingPlatform(40, 600, 90, 610, 110, 0, 1), DangerPlatform(200, 640, 250, 650, self.x, self.y),
+			DangerPlatform(430, 690, 700, 700, self.x, self.y), DisappearingPlatform(610, 640, 630, 650, 3, 1, 0),
+			DisappearingPlatform(670, 610, 690, 620, 3, 1, 0), DisappearingPlatform(610, 580, 630, 590, 3, 1, 1), 
+			MovingPlatform(535, 450, 555, 460, 0, 80, 1)]
+		
 
 		room.after(10, self.loop)
 		
 	def loop(self):
 		xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
-		# yStep = (keyboard.is_pressed('down') - keyboard.is_pressed('up')) * self.step
 		self.dy -= self.g
 		if keyboard.is_pressed('up') and self.onGround:
 			self.dy = -self.jump
@@ -43,7 +50,6 @@ class Box:
 		self.boundingFloor()
 		self.boundingSides()
 		self.boundingPlatforms()
-		self.boundingMovingPlatforms()
 			
 	def boundingFloor(self):
 		if self.y + (self.height / 2) > roomSize:
@@ -65,18 +71,7 @@ class Box:
 			
 	def boundingPlatforms(self):
 		for platform in self.platforms:
-			move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
-			self.x += move[0]
-			self.y += move[1]
-			room.move(self.box, move[0], move[1])
-			if move[2]:
-				self.dy = 0
-			if move[3]:
-				self.onGround = True
-			
-	def boundingMovingPlatforms(self):
-		for platform in self.movingPlatforms:
-			platform.slide()
+			if isinstance(platform, MovingPlatform): platform.slide()
 			move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
 			self.x += move[0]
 			self.y += move[1]
@@ -202,6 +197,26 @@ class DisappearingPlatform(Platform):
 			return super().bounding(x, y, w, h, dx, dy)
 		return (0, 0, False, False)
 
+class DangerPlatform(Platform):
+	def __init__(self, x1, y1, x2, y2, startX, startY):
+		super().__init__(x1, y1, x2, y2)
+		self.startX = startX
+		self.startY = startY
+		super().changeColor('red')
+		
+	def bounding(self, x, y, w, h, dx, dy):
+		output = super().bounding(x, y, w, h, dx, dy)
+		xStep = output[0]
+		yStep = output[1]
+		resetDy = output[2]
+		ground = output[3]
+		if xStep or yStep or resetDy or ground:
+			xStep = self.startX - x
+			yStep = self.startY - y
+			resetDy = True
+			ground = False
+		else: return (0, 0, False, False)
+		return (xStep, yStep, resetDy, ground)
 
 class Keyboard:
 	def __init__(self):
