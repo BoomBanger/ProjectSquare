@@ -22,13 +22,14 @@ class Box:
 		
 		self.platforms = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(200, 650, 250, 700),
 			Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), Platform(30, 0, 40, 660),
-			DisappearingPlatform(320, 630, 340, 700, 3, 1, 0), DisappearingPlatform(370, 660, 390, 680, 3, 1, 0),
+			DisappearingPlatform(320, 630, 340, 700, 1, 1, 0), DisappearingPlatform(370, 660, 390, 680, 1, 1, 0),
 			Platform(410, 630, 430, 700), DisappearingPlatform(470, 660, 490, 670, 3, 1, 0),
 			DisappearingPlatform(520, 640, 540, 650, 3, 1, 0), DisappearingPlatform(555, 670, 585, 680, 3, 1, 2),
 			Platform(565, 570, 575, 650), MovingPlatform(60, 600, 90, 610, 90, 0, 1), DangerPlatform(200, 640, 250, 650, self.x, self.y),
 			DangerPlatform(430, 690, 700, 700, self.x, self.y), DisappearingPlatform(610, 640, 630, 650, 3, 1, 0),
 			DisappearingPlatform(670, 610, 690, 620, 3, 1, 0), DisappearingPlatform(610, 580, 630, 590, 3, 1, 1), 
-			MovingPlatform(535, 450, 555, 460, 0, 80, 0.2), Platform(445, 500, 448, 510), Platform(238, 510, 241, 520)]
+			MovingPlatform(535, 450, 555, 460, 0, 80, 0.2), Platform(445, 500, 448, 510), Platform(238, 510, 241, 520), 
+			MovingPlatform(100, 450, 120, 460, 0, 100, 4), Platform(140, 440, 170, 450)]
 		
 
 		room.after(10, self.loop)
@@ -36,7 +37,7 @@ class Box:
 	def loop(self):
 		xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
 		self.dy -= self.g
-		if keyboard.is_pressed('up') and self.onGround:
+		if (keyboard.is_pressed('up') or keyboard.is_pressed('space')) and self.onGround:
 			self.dy = -self.jump
 		self.onGround = False
 		self.x += xStep
