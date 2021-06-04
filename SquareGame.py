@@ -4,7 +4,7 @@ from math import *
 root = Tk()
 root.title('SquareGame')
 roomSize = 700
-
+frameRate = 70
 
 class Box:
 	def __init__(self):
@@ -32,7 +32,7 @@ class Box:
 			MovingPlatform(100, 450, 120, 460, 0, 100, 4), Platform(140, 440, 170, 450)]
 		
 
-		room.after(10, self.loop)
+		self.loop()
 		
 	def loop(self):
 		xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
@@ -45,7 +45,7 @@ class Box:
 		self.dx = xStep
 		room.move(self.box, xStep, self.dy)
 		self.bounding()
-		room.after(10, self.loop)
+		room.after(round(1000 / frameRate), self.loop)
 		
 	def bounding(self):
 		self.boundingFloor()
