@@ -127,9 +127,10 @@ class Platform:
     def changeColor(self, color):
         if color == "Hide":
             room.itemconfigure(self.platform, state='hidden')
-        else:
-            room.itemconfigure(self.platform, fill=color)
+        elif color == "Show":
             room.itemconfigure(self.platform, state='normal')
+        else:
+            room.itemconfigure(self.platform, fill=color, state='normal')
 
 
 class MovingPlatform(Platform):
@@ -267,12 +268,27 @@ platformList = [levelOne]
 
 class Level:
     def __init__(self):
+        ## got to hide all the other platforms in the other levels
+        for level in platformList:
+            for platform in level:
+                platform.changeColor("Hide")
+        
         self.platformLayout = platformList[currentLevel]
+
+        for platform in self.platformLayout:
+            platform.changeColor("Show")
 
     def changeLevel(self):
         global currentLevel
+
+        for platform in self.platformLayout:
+            platform.changeColor("Hide")
+
         currentLevel += 1
         self.platformLayout = platformList[currentLevel]
+
+        for platform in self.platformLayout:
+            platform.changeColor("Show")
 
 
 keyboard = Keyboard()
