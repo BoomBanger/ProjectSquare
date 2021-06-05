@@ -4,8 +4,9 @@ from math import *
 root = Tk()
 root.title('SquareGame')
 roomSize = 700
+currentLevel = 0
 
-currentlvl = 1
+room = Canvas(root, height=roomSize, width=roomSize)
 
 class Box:
 
@@ -22,24 +23,6 @@ class Box:
         self.onGround = False
         self.box = room.create_rectangle(self.x - self.width / 2, self.y - self.height / 2, self.x + self.width / 2,
                                          self.y + self.height / 2, fill='blue')
-
-        self.platforms = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(200, 650, 250, 700),
-                          Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), Platform(30, 0, 40, 660),
-                          DisappearingPlatform(320, 630, 340, 700, 1, 1, 0),
-                          DisappearingPlatform(370, 660, 390, 680, 1, 1, 0),
-                          Platform(410, 630, 430, 700), DisappearingPlatform(470, 660, 490, 670, 3, 1, 0),
-                          DisappearingPlatform(520, 640, 540, 650, 3, 1, 0),
-                          DisappearingPlatform(555, 670, 585, 680, 3, 1, 2),
-                          Platform(565, 570, 575, 650), MovingPlatform(60, 600, 90, 610, 90, 0, 1),
-                          DangerPlatform(200, 640, 250, 650, 15, 15),
-                          DangerPlatform(430, 690, 700, 700, 15, 15),
-                          DisappearingPlatform(610, 640, 630, 650, 3, 1, 0),
-                          DisappearingPlatform(670, 610, 690, 620, 3, 1, 0),
-                          DisappearingPlatform(610, 580, 630, 590, 3, 1, 1),
-                          MovingPlatform(535, 460, 555, 470, 0, 75, 0.4), Platform(445, 500, 448, 510),
-                          Platform(238, 510, 241, 520),
-                          MovingPlatform(100, 450, 120, 460, 0, 100, 3), Platform(140, 440, 170, 450),
-                          MovingPlatform(170, 410, 250, 420, 300, 0, 1), DangerPlatform(210, 390, 220, 410, 155, 435)]
 
         room.after(10, self.loop)
 
@@ -80,8 +63,9 @@ class Box:
             room.move(self.box, -xStep, 0)
 
     def boundingPlatforms(self):
-        for platform in self.platforms:
-            if isinstance(platform, MovingPlatform): platform.slide()
+        for platform in level.platformLayout:
+            if isinstance(platform, MovingPlatform):
+                platform.slide()
             move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
             self.x += move[0]
             self.y += move[1]
@@ -127,7 +111,7 @@ class Platform:
                 xStep = self.right - (x - (w / 2))
             elif x + (w / 2) > self.left and x + (w / 2) - dx <= self.left - pdx:
                 xStep = self.left - (x + (w / 2))
-        return (xStep, yStep, resetDy, ground)
+        return xStep, yStep, resetDy, ground
 
     def move(self, x, y):
         self.x1 += x
@@ -164,7 +148,7 @@ class MovingPlatform(Platform):
         self.forward = True
         self.type = "Moving"
 
-    def bounding(self, x, y, w, h, dx, dy):
+    def bounding(self, x, y, w, h, dx, dy, pdx=0, pdy=0):
         output = super().bounding(x, y, w, h, dx, dy, self.xSpeed * (1 if self.forward else -1),
                                   self.ySpeed * (0 if self.forward else -1))
         xStep = output[0]
@@ -174,10 +158,11 @@ class MovingPlatform(Platform):
         if ground:
             xStep += self.xSpeed * (1 if self.forward else -1)
             yStep += self.ySpeed * (1 if self.forward else -1)
-            dOutput = b.platforms[25].bounding(x, y, w, h, dx + self.xSpeed * (1 if self.forward else -1), dy)
-            if dOutput[0] or dOutput[1] or dOutput[2] or dOutput[3]:
-                return (dOutput[0], dOutput[1], dOutput[2], dOutput[3])
-        return (xStep, yStep, resetDy, ground)
+            if currentLevel == 0:
+                dOutput = level.platformLayout[25].bounding(x, y, w, h, dx + self.xSpeed * (1 if self.forward else -1), dy)
+                if dOutput[0] or dOutput[1] or dOutput[2] or dOutput[3]:
+                    return dOutput[0], dOutput[1], dOutput[2], dOutput[3]
+        return xStep, yStep, resetDy, ground
 
     def slide(self):
         self.pdx = self.xSpeed * (1 if self.forward else -1)
@@ -198,7 +183,7 @@ class DisappearingPlatform(Platform):
         super().changeColor('green')
         self.type = "Disappearing"
 
-    def bounding(self, x, y, w, h, dx, dy):
+    def bounding(self, x, y, w, h, dx, dy, pdx=0, pdy=0):
         self.time += 1
         if self.time < self.tOn:
             color = "#"
@@ -213,7 +198,7 @@ class DisappearingPlatform(Platform):
 
         if self.time < self.tOn:
             return super().bounding(x, y, w, h, dx, dy)
-        return (0, 0, False, False)
+        return 0, 0, False, False
 
 
 class DangerPlatform(Platform):
@@ -224,7 +209,7 @@ class DangerPlatform(Platform):
         super().changeColor('red')
         self.type = "Danger"
 
-    def bounding(self, x, y, w, h, dx, dy):
+    def bounding(self, x, y, w, h, dx, dy, pdx=0, pdy=0):
         output = super().bounding(x, y, w, h, dx, dy)
         xStep = output[0]
         yStep = output[1]
@@ -236,8 +221,8 @@ class DangerPlatform(Platform):
             resetDy = True
             ground = False
         else:
-            return (0, 0, False, False)
-        return (xStep, yStep, resetDy, ground)
+            return 0, 0, False, False
+        return xStep, yStep, resetDy, ground
 
 
 class Keyboard:
@@ -260,11 +245,39 @@ class Keyboard:
             self.down.remove(key)
 
 
-room = Canvas(root, height=roomSize, width=roomSize)
+levelOne = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(200, 650, 250, 700),
+            Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), Platform(30, 0, 40, 660),
+            DisappearingPlatform(320, 630, 340, 700, 1, 1, 0),
+            DisappearingPlatform(370, 660, 390, 680, 1, 1, 0),
+            Platform(410, 630, 430, 700), DisappearingPlatform(470, 660, 490, 670, 3, 1, 0),
+            DisappearingPlatform(520, 640, 540, 650, 3, 1, 0),
+            DisappearingPlatform(555, 670, 585, 680, 3, 1, 2),
+            Platform(565, 570, 575, 650), MovingPlatform(60, 600, 90, 610, 90, 0, 1),
+            DangerPlatform(200, 640, 250, 650, 15, 15),
+            DangerPlatform(430, 690, 700, 700, 15, 15),
+            DisappearingPlatform(610, 640, 630, 650, 3, 1, 0),
+            DisappearingPlatform(670, 610, 690, 620, 3, 1, 0),
+            DisappearingPlatform(610, 580, 630, 590, 3, 1, 1),
+            MovingPlatform(535, 460, 555, 470, 0, 75, 0.4), Platform(445, 500, 448, 510),
+            Platform(238, 510, 241, 520),
+            MovingPlatform(100, 450, 120, 460, 0, 100, 3), Platform(140, 440, 170, 450),
+            MovingPlatform(170, 410, 250, 420, 300, 0, 1), DangerPlatform(210, 390, 220, 410, 155, 435)]
+platformList = [levelOne]
+
+
+class Level:
+    def __init__(self):
+        self.platformLayout = platformList[currentLevel]
+
+    def changeLevel(self):
+        global currentLevel
+        currentLevel += 1
+        self.platformLayout = platformList[currentLevel]
+
 
 keyboard = Keyboard()
 b = Box()
-
+level = Level()
 
 room.pack()
 room.focus_set()
