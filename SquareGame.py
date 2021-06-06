@@ -161,10 +161,10 @@ class MovingPlatform(Platform):
         if ground:
             xStep += self.xSpeed * (1 if self.forward else -1)
             yStep += self.ySpeed * (1 if self.forward else -1)
-            if currentLevel == 0:
+            '''if currentLevel == 0:
                 dOutput = level.platformLayout[25].bounding(x, y, w, h, dx + self.xSpeed * (1 if self.forward else -1), dy + self.ySpeed * (1 if self.forward else -1))
                 if dOutput[0] or dOutput[1] or dOutput[2] or dOutput[3]:
-                    return dOutput[0], dOutput[1], dOutput[2], dOutput[3]
+                    return dOutput[0], dOutput[1], dOutput[2], dOutput[3]'''
         return xStep, yStep, resetDy, ground
 
     def slide(self):
