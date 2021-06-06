@@ -63,6 +63,7 @@ class Box:
             room.move(self.box, -xStep, 0)
 
     def boundingPlatforms(self):
+        resetDy = False
         for platform in level.platformLayout:
             if isinstance(platform, MovingPlatform):
                 platform.slide()
@@ -73,9 +74,11 @@ class Box:
             self.dy += move[1]
             room.move(self.box, move[0], move[1])
             if move[2]:
-                self.dy = 0
+                resetDy = True
             if move[3]:
                 self.onGround = True
+                print("Ground")
+        if resetDy: self.dy = 0
 
 
 class Platform:
