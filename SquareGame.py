@@ -11,7 +11,7 @@ room = Canvas(root, height=roomSize, width=roomSize)
 class Box:
 
     def __init__(self):
-        self.x = 15
+        self.x = 150
         self.y = 15
         self.dy = 0
         self.dx = 0
@@ -69,6 +69,8 @@ class Box:
             move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
             self.x += move[0]
             self.y += move[1]
+            self.dx += move[0]
+            self.dy += move[1]
             room.move(self.box, move[0], move[1])
             if move[2]:
                 self.dy = 0
