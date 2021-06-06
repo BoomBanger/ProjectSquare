@@ -77,7 +77,6 @@ class Box:
                 resetDy = True
             if move[3]:
                 self.onGround = True
-                print("Ground")
         if resetDy: self.dy = 0
 
 
@@ -151,26 +150,26 @@ class MovingPlatform(Platform):
         self.pdy = 0
         self.x = 0
         self.y = 0
+        self.xPrev = 0
+        self.yPrev = 0
         self.forward = True
         self.type = "Moving"
 
     def bounding(self, x, y, w, h, dx, dy, pdx=0, pdy=0):
-        output = super().bounding(x, y, w, h, dx, dy, self.pdx,
-                                  self.pdy)
+        pdx = self.x - self.xPrev
+        pdy = self.y - self.yPrev
+        output = super().bounding(x, y, w, h, dx, dy, pdx, pdy)
         xStep = output[0]
         yStep = output[1]
         resetDy = output[2]
         ground = output[3]
         if ground:
-            xStep += self.xSpeed * (1 if self.forward else -1)
-            yStep += self.ySpeed * (1 if self.forward else -1)
-            '''if currentLevel == 0:
-                dOutput = level.platformLayout[25].bounding(x, y, w, h, dx + self.xSpeed * (1 if self.forward else -1), dy + self.ySpeed * (1 if self.forward else -1))
-                if dOutput[0] or dOutput[1] or dOutput[2] or dOutput[3]:
-                    return dOutput[0], dOutput[1], dOutput[2], dOutput[3]'''
+            xStep += pdx
         return xStep, yStep, resetDy, ground
 
     def slide(self):
+        self.xPrev = self.x
+        self.yPrev = self.y
         self.pdx = self.xSpeed * (1 if self.forward else -1)
         self.pdy = self.ySpeed * (1 if self.forward else -1)
         super().move(self.pdx, self.pdy)
