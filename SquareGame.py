@@ -37,7 +37,7 @@ class Box:
         self.dx = xStep
         room.move(self.box, xStep, self.dy)
         self.bounding()
-        room.after(15, self.loop)
+        room.after(10, self.loop)
 
     def bounding(self):
         self.boundingFloor()
@@ -266,13 +266,15 @@ levelOne = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(
             MovingPlatform(535, 460, 555, 470, 0, 75, 0.4), Platform(445, 500, 448, 510),
             Platform(238, 510, 241, 520),
             MovingPlatform(100, 450, 120, 460, 0, 100, 3), Platform(140, 440, 170, 450),
-            MovingPlatform(170, 410, 250, 420, 300, 0, 1), DangerPlatform(210, 390, 220, 410, 155, 435)]
+            MovingPlatform(170, 410, 250, 420, 300, 0, 1), DangerPlatform(210, 390, 220, 410, 155, 435),
+            DangerPlatform(250, 360, 260, 390, 155, 435), DangerPlatform(300, 400, 350, 410, 155, 435),
+            DangerPlatform(400, 400, 550, 410, 155, 435), DisappearingPlatform(450, 380, 480, 390, 3, 1, 2)]
 platformList = [levelOne]
 
 
 class Level:
     def __init__(self):
-        ## got to hide all the other platforms in the other levels
+        # hiding all the other platforms in the other levels
         for level in platformList:
             for platform in level:
                 platform.changeColor("Hide")
