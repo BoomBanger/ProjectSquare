@@ -27,8 +27,10 @@ class Box:
 
     # creates a constant update loop for the box allowing the box to move 
     def loop(self):
+        # horizontal movement is determined
         xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
         self.dy -= self.g
+        # jumping is applied here
         if (keyboard.is_pressed('up') or keyboard.is_pressed('space')) and self.onGround:
             self.dy = -self.jump
         self.onGround = False
