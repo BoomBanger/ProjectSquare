@@ -11,21 +11,21 @@ room = Canvas(root, height=roomSize, width=roomSize)
 class Box:
 
     def __init__(self):
-        self.x = 150
-        self.y = 15
-        self.dy = 0
-        self.dx = 0
-        self.g = -0.1
-        self.jump = 3
-        self.step = 2
-        self.width = 10
-        self.height = 10
+        self.x = 150   # x position
+        self.y = 15   # y position
+        self.dy = 0   # change in y position
+        self.dx = 0   # change in x position
+        self.g = -0.1   # gravity
+        self.jump = 3   # height of jump
+        self.step = 2   # speed of the box
+        self.width = 10   # width of box
+        self.height = 10   # height of box
         self.onGround = False
         self.box = room.create_rectangle(self.x - self.width / 2, self.y - self.height / 2, self.x + self.width / 2,
                                          self.y + self.height / 2, fill='blue')
-
         room.after(10, self.loop)
 
+    # creates a constant update loop for the box allowing the box to move 
     def loop(self):
         xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
         self.dy -= self.g
