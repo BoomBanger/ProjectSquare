@@ -39,14 +39,17 @@ class Box:
         self.bounding()
         room.after(10, self.loop)
 
+    # This loops through all necessary bounding functions
     def bounding(self):
         self.boundingFloor()
         self.boundingSides()
         self.boundingPlatforms()
 
+    # bounds the bottom of the screen
     def boundingFloor(self):
-        if self.y + (self.height / 2) > roomSize:
-            yStep = (self.y + (self.height / 2)) - roomSize
+        if self.y + (self.height / 2) > roomSize: 
+            # finds distance between bottom of box and floor if the box is past the floor
+            yStep = (self.y + (self.height / 2)) - roomSize  
             self.y -= yStep
             self.dy = 0
             room.move(self.box, 0, -yStep)
@@ -62,6 +65,7 @@ class Box:
             self.x -= xStep
             room.move(self.box, -xStep, 0)
 
+    # This handles loops through bounding for all relevant platforms
     def boundingPlatforms(self):
         resetDy = False
         for platform in level.platformLayout:
