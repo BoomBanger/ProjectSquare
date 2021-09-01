@@ -57,6 +57,7 @@ class Box:
             room.move(self.box, 0, -yStep)
             self.onGround = True
 
+    # bounds the sides of the room
     def boundingSides(self):
         if self.x + (self.width / 2) > roomSize:
             xStep = (self.x + (self.width / 2)) - roomSize
@@ -70,6 +71,7 @@ class Box:
     # This handles loops through bounding for all relevant platforms
     def boundingPlatforms(self):
         resetDy = False
+        # only checks bounding for relevant platforms 
         for platform in level.platformLayout:
             if isinstance(platform, MovingPlatform):
                 platform.slide()
@@ -79,8 +81,10 @@ class Box:
             self.dx += move[0]
             self.dy += move[1]
             room.move(self.box, move[0], move[1])
+            # checks to see if box bounded on the top or bottom, resets dy
             if move[2]:
                 resetDy = True
+            # checks to see if box is on top of something, sets its status to be on the ground
             if move[3]:
                 self.onGround = True
         if resetDy: self.dy = 0
