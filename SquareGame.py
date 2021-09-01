@@ -112,17 +112,23 @@ class Platform:
         yStep = 0
         resetDy = False
         ground = False
+        # this bounds for the top and bottom of platforms
         if x + (w / 2) > self.left and x - (w / 2) < self.right:
+            # this bounds the top of the platform and bottom of box
             if y + (h / 2) > self.top and y + (h / 2) - dy <= self.top - pdy:
                 yStep = self.top - (y + (h / 2))
                 resetDy = True
                 ground = True
+            # this bounds the bottom of the platform and the top of the box
             elif y - (h / 2) < self.bottom and y - (h / 2) - dy >= self.bottom - pdy:
                 yStep = self.bottom - (y - (h / 2))
                 resetDy = True
+        # this bounds the left and right of platforms
         if y - (h / 2) < self.bottom and y + (h / 2) > self.top:
+            # this bounds the right of the platform and left of the box
             if x - (w / 2) < self.right and x - (w / 2) - dx >= self.right - pdx:
                 xStep = self.right - (x - (w / 2))
+            # this bounds the left of the platform and right of the box
             elif x + (w / 2) > self.left and x + (w / 2) - dx <= self.left - pdx:
                 xStep = self.left - (x + (w / 2))
         return xStep, yStep, resetDy, ground
