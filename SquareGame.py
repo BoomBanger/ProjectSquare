@@ -97,10 +97,10 @@ class Platform:
         self.y1 = y2
         self.x2 = x2
         self.y2 = y2
-        self.top = min(y1, y2)
-        self.bottom = max(y1, y2)
-        self.left = min(x1, x2)
-        self.right = max(x1, x2)
+        self.top = min(y1, y2)  # determines which y is the top of the box
+        self.bottom = max(y1, y2)  # determines which y is the bottom of the box
+        self.left = min(x1, x2)  # determines which x is the left of the box
+        self.right = max(x1, x2)  # determines which x is the right of the box
         self.height = abs(y1 - y2)
         self.width = abs(x1 - x2)
         self.platform = room.create_rectangle(x1, y1, x2, y2, fill='black')
@@ -131,6 +131,7 @@ class Platform:
             # this bounds the left of the platform and right of the box
             elif x + (w / 2) > self.left and x + (w / 2) - dx <= self.left - pdx:
                 xStep = self.left - (x + (w / 2))
+        # this returns to boundingPlatforms in the box class
         return xStep, yStep, resetDy, ground
 
     def move(self, x, y):
