@@ -313,10 +313,21 @@ class Level:
         for platform in self.platformLayout:
             platform.changeColor("Show")
 
+            
+# title screen functions and buttons
+def startGame():
+    startButton.destroy()
+    gameTitle.destroy()
+    keyboard = Keyboard()
+    b = Box()
+    level = Level()
+   
+startButton = Button(root, text="Start", padx=100, pady=10, command=startGame)
+# add colors!!!
+gameTitle = Label(root, text="SquareGame (working title)", font=("Helvetica", 20))
 
-keyboard = Keyboard()
-b = Box()
-level = Level()
+gameTitle.grid(row=0)
+startButton.grid(row=1)
 
 room.pack()
 room.focus_set()
