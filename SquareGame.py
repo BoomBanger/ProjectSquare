@@ -5,8 +5,12 @@ root = Tk()
 root.title('SquareGame')
 roomSize = 700
 currentLevel = 0
+global keyboard
+global b
+global level
 
 room = Canvas(root, height=roomSize, width=roomSize)
+
 
 class Box:
 
@@ -27,6 +31,7 @@ class Box:
 
     # creates a constant update loop for the box allowing the box to move 
     def loop(self):
+        global keyboard
         # horizontal movement is determined
         xStep = (keyboard.is_pressed('right') - keyboard.is_pressed('left')) * self.step
         self.dy -= self.g
@@ -70,6 +75,7 @@ class Box:
 
     # This handles loops through bounding for all relevant platforms
     def boundingPlatforms(self):
+        global level
         resetDy = False
         # only checks bounding for relevant platforms 
         for platform in level.platformLayout:
@@ -288,12 +294,16 @@ levelOne = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(
             DangerPlatform(400, 400, 550, 410, 155, 435), DisappearingPlatform(450, 380, 480, 390, 3, 1, 2)]
 platformList = [levelOne]
 
+label1 = Label(root, text="LEVEL 1: HUMBLE BEGINNINGS", font=100)
+label2 = Label(root, text="LEVEL 2: DON'T KNOW YET")
+levelTitles = [label1, label2]
+
 
 class Level:
     def __init__(self):
         # hiding all the other platforms in the other levels
-        for level in platformList:
-            for platform in level:
+        for stage in platformList:
+            for platform in stage:
                 platform.changeColor("Hide")
         
         self.platformLayout = platformList[currentLevel]
@@ -301,13 +311,17 @@ class Level:
         for platform in self.platformLayout:
             platform.changeColor("Show")
 
+        levelTitles[currentLevel].grid(row=0, column=1)
+
     def changeLevel(self):
         global currentLevel
 
         for platform in self.platformLayout:
             platform.changeColor("Hide")
 
+        levelTitles[currentLevel].destroy()
         currentLevel += 1
+        levelTitles[currentLevel].grid(row=0, column=1)
         self.platformLayout = platformList[currentLevel]
 
         for platform in self.platformLayout:
@@ -318,17 +332,18 @@ class Level:
 def startGame():
     startButton.destroy()
     gameTitle.destroy()
-    keyboard = Keyboard()
-    b = Box()
-    level = Level()
-   
-startButton = Button(root, text="Start", padx=100, pady=10, command=startGame)
+    global keyboard, b, level
+    keyboard, level, b = Keyboard(), Level(), Box()
+    room.grid(row=0, column=0)
+    room.focus_set()
+
+
+startButton = Button(root, text="Start", padx=100, pady=10, font=("Helvetic", 12), command=startGame)
+
 # add colors!!!
 gameTitle = Label(root, text="SquareGame (working title)", font=("Helvetica", 20))
 
 gameTitle.grid(row=0)
 startButton.grid(row=1)
 
-room.pack()
-room.focus_set()
 root.mainloop()
