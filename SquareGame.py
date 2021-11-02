@@ -343,7 +343,7 @@ startButton = Button(root, text="Start", padx=100, pady=10, font=("Helvetic", 12
 # add colors!!!
 gameTitle = Label(root, text="SquareGame (working title)", font=("Helvetica", 20))
 
-copyrightInfo = Label(root, text="Ver. Alpha --- Copyright 2020 BoomBanger Inc")
+copyrightInfo = Label(root, text="Ver. Alpha --- Copyright 2021 BoomBanger Inc")
 
 gameTitle.grid(row=0)
 startButton.grid(row=1)
