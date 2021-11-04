@@ -171,6 +171,9 @@ class Platform:
                 room.itemconfigure(self.platform, state='hidden')
         else:
             room.itemconfigure(self.platform, fill=self.colors[self.type], state='normal')
+		
+        if self is activePlatform: room.itemconfigure(self.platform, outline='blue', width=2)
+        else: room.itemconfigure(self.platform, outline='black', width = 1)
         room.after(10, self.loop)
 
 level = []
