@@ -287,7 +287,7 @@ levelOne = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(
     DangerPlatform(300, 400, 350, 410, 55, 355), DangerPlatform(400, 400, 550, 410, 55, 355), 
     DisappearingPlatform(450, 380, 480, 390, 3, 1, 2), MovingPlatform(582, 346, 612, 356, 0, 40, 0.6), 
     DangerPlatform(625, 315, 635, 415, 55, 355), DangerPlatform(625, 159, 635, 259, 55, 355), Platform(40, 360, 70, 370), 
-    Platform(70, 340, 80, 370), MovingPlatform(659, 172, 689, 182, 0, 140, 0.6), DangerPlatform(625, 0, 635, 100, 0, 0), 
+    Platform(70, 340, 80, 370), MovingPlatform(659, 172, 689, 182, 0, 140, 0.6), DangerPlatform(625, 0, 635, 100, 55, 355), 
     Platform(577, 171, 597, 181), DisappearingPlatform(495, 142, 545, 152, 2, 2, 5), 
     DisappearingPlatform(445, 142, 495, 152, 2, 2, 4), DisappearingPlatform(395, 142, 445, 152, 2, 2, 3), 
     Platform(270, 112, 530, 122), DisappearingPlatform(345, 142, 395, 152, 2, 2, 2), 
