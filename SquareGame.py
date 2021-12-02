@@ -273,25 +273,27 @@ class Keyboard:
             self.down.remove(key)
 
 
-levelOne = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(200, 650, 250, 700),
-            Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), Platform(30, 0, 40, 660),
-            DisappearingPlatform(320, 630, 340, 700, 1, 1, 0),
-            DisappearingPlatform(370, 660, 390, 680, 1, 1, 0),
-            Platform(410, 630, 430, 700), DisappearingPlatform(470, 660, 490, 670, 3, 1, 0),
-            DisappearingPlatform(520, 640, 540, 650, 3, 1, 0),
-            DisappearingPlatform(555, 670, 585, 680, 3, 1, 2),
-            Platform(565, 570, 575, 650), MovingPlatform(60, 600, 90, 610, 90, 0, 1),
-            DangerPlatform(200, 640, 250, 650, 15, 15),
-            DangerPlatform(430, 690, 700, 700, 15, 15),
-            DisappearingPlatform(610, 640, 630, 650, 3, 1, 0),
-            DisappearingPlatform(670, 610, 690, 620, 3, 1, 0),
-            DisappearingPlatform(610, 580, 630, 590, 3, 1, 1),
-            MovingPlatform(535, 460, 555, 470, 0, 75, 0.4), Platform(445, 500, 448, 510),
-            Platform(238, 510, 241, 520),
-            MovingPlatform(100, 450, 120, 460, 0, 100, 3), Platform(140, 440, 170, 450),
-            MovingPlatform(170, 410, 250, 420, 300, 0, 1), DangerPlatform(210, 390, 220, 410, 155, 435),
-            DangerPlatform(250, 360, 260, 390, 155, 435), DangerPlatform(300, 400, 350, 410, 155, 435),
-            DangerPlatform(400, 400, 550, 410, 155, 435), DisappearingPlatform(450, 380, 480, 390, 3, 1, 2)]
+levelOne = [Platform(130, 670, 170, 680), Platform(40, 640, 100, 660), Platform(200, 650, 250, 700), 
+    Platform(250, 570, 280, 700), Platform(320, 520, 340, 630), Platform(30, 0, 40, 660), 
+    DisappearingPlatform(320, 630, 340, 700, 1, 1, 0), DisappearingPlatform(370, 660, 390, 680, 1, 1, 0), 
+    Platform(410, 630, 430, 700), DisappearingPlatform(470, 660, 490, 670, 3, 1, 0), 
+    DisappearingPlatform(520, 640, 540, 650, 3, 1, 0), DisappearingPlatform(555, 670, 585, 680, 3, 1, 2), 
+    Platform(565, 570, 575, 650), MovingPlatform(60, 600, 90, 610, 90, 0, 1.0), DangerPlatform(200, 640, 250, 650, 15, 15), 
+    DangerPlatform(430, 690, 700, 700, 15, 15), DisappearingPlatform(610, 640, 630, 650, 3, 1, 0), 
+    DisappearingPlatform(670, 610, 690, 620, 3, 1, 0), DisappearingPlatform(610, 580, 630, 590, 3, 1, 1), 
+    MovingPlatform(535, 460, 555, 470, 0, 75, 0.4), Platform(445, 500, 448, 510), Platform(238, 510, 241, 520), 
+    MovingPlatform(100, 450, 120, 460, 0, 100, 3.0), Platform(140, 440, 170, 450), MovingPlatform(170, 410, 250, 420, 300, 0, 1.0), 
+    DangerPlatform(210, 390, 220, 410, 55, 355), DangerPlatform(250, 360, 260, 390, 55, 355), 
+    DangerPlatform(300, 400, 350, 410, 55, 355), DangerPlatform(400, 400, 550, 410, 55, 355), 
+    DisappearingPlatform(450, 380, 480, 390, 3, 1, 2), MovingPlatform(582, 346, 612, 356, 0, 40, 0.6), 
+    DangerPlatform(625, 315, 635, 415, 55, 355), DangerPlatform(625, 159, 635, 259, 55, 355), Platform(40, 360, 70, 370), 
+    Platform(70, 340, 80, 370), MovingPlatform(659, 172, 689, 182, 0, 140, 0.6), DangerPlatform(625, 0, 635, 100, 0, 0), 
+    Platform(577, 171, 597, 181), DisappearingPlatform(495, 142, 545, 152, 2, 2, 5), 
+    DisappearingPlatform(445, 142, 495, 152, 2, 2, 4), DisappearingPlatform(395, 142, 445, 152, 2, 2, 3), 
+    Platform(270, 112, 530, 122), DisappearingPlatform(345, 142, 395, 152, 2, 2, 2), 
+    DisappearingPlatform(295, 142, 345, 152, 2, 2, 1), DisappearingPlatform(245, 142, 295, 152, 2, 2, 0), 
+    Platform(520, 0, 530, 112), Platform(270, 62, 280, 112), MovingPlatform(74, 160, 94, 170, 100, 0, 0.5), 
+    Platform(40, 130, 50, 140), Platform(81, 100, 91, 110), MovingPlatform(74, 65, 94, 75, 100, 0, 0.5)]
 platformList = [levelOne]
 
 label1 = Label(root, text="LEVEL 1: HUMBLE BEGINNINGS", font=100)
