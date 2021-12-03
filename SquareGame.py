@@ -84,9 +84,10 @@ class Box:
             move = platform.bounding(self.x, self.y, self.width, self.height, self.dx, self.dy)
             self.x += move[0]
             self.y += move[1]
-            self.dx += move[0]
-            self.dy += move[1]
             room.move(self.box, move[0], move[1])
+            if not (abs(move[0]) > 20 or abs(move[1]) > 20):
+              self.dx += move[0]
+              self.dy += move[1]
             # checks to see if box bounded on the top or bottom, resets dy
             if move[2]:
                 resetDy = True
